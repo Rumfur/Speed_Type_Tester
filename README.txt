@@ -1,0 +1,1 @@
+This project aims to create a way of testing the users word typing speed based on a test, from witch the user will receave his score.
