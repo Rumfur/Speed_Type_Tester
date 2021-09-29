@@ -1,4 +1,7 @@
 from os.path import exists
+import logging
+
+logger = logging.getLogger(logging.basicConfig(filename='logFile.txt', encoding='utf-8', level=logging.DEBUG, format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p'))
 
 def writeConfig(): # Writes config file lines
     file = open("config.txt", "a")
@@ -13,7 +16,7 @@ def checkConfig():
 
 def readConfig():
     file = open("config.txt", "r") # Reads config file
-    print(file.read())
+    return file.read()
 
 checkConfig()
-readConfig()
+logger.info(readConfig())
