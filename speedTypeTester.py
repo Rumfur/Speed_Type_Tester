@@ -1,8 +1,8 @@
 from os.path import exists
 import logging
+import sqlite3
 import certifi
 import pymongo
-import sqlite3
 
 def addDBvalues():
     conn = sqlite3.connect('speedTypeDB.db')
