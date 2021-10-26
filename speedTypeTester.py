@@ -1,8 +1,12 @@
+from os import write
 from os.path import exists
+#from speedTypeTester import *
 import logging
 import sqlite3
 import certifi
 import pymongo
+from time import perf_counter
+import random
 
 def addDBvalues():
     conn = sqlite3.connect('speedTypeDB.db')
@@ -17,7 +21,6 @@ ca = certifi.where()
 myclient = pymongo.MongoClient('mongodb+srv://Pukitis:<Student007>@speedtypecluster.jk8qi.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', tlsCAFile=ca)
 mydb = myclient["SpeedTypeCluster"]
 mycol = mydb["SpeedTypeCluster"]
-
 
 addDBvalues()
 
@@ -40,4 +43,37 @@ def readConfig():
 
 checkConfig()
 logger.info(readConfig())
-print("Hello world")
+
+#ACTUAL PROJECT STARTS HERE
+
+
+confDict = {}
+confDict[0] = "banana"
+confDict[1] = "nonana"
+confDict[2] = "house"
+confDict[3] = "crayon"
+print(len(confDict))
+
+choice= ""
+while choice != "Start":
+    print("Write \"Start\" to start test.")
+    choice = input()
+
+print("The test has started")
+
+count = 0
+inputWord = ""
+timerStart = perf_counter()
+
+x = random.sample(range(0,len(confDict)),1)
+print(x)
+while count != 10:
+    word = confDict[random.sample(range(0,len(confDict)),1)[0]]
+    while inputWord != word:
+        print("Write "+word+"!")
+        inputWord = input()
+        count += 1
+
+
+timerStop = perf_counter()
+print("Time is : ",(timerStop-timerStart))
