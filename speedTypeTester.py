@@ -1,79 +1,62 @@
 from os import write
 from os.path import exists
-#from speedTypeTester import *
-import logging
-import sqlite3
-import certifi
-import pymongo
+from configMaker import *
+from databaseMaker import *
 from time import perf_counter
 import random
 
-def addDBvalues():
-    conn = sqlite3.connect('speedTypeDB.db')
-    cur = conn.cursor()
-    cur.execute('DROP TABLE IF EXISTS results')
-
-    cur.execute('CREATE TABLE results (NR INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE, username TEXT NOT NULL UNIQUE, typeSpeed INTEGER)')
-    cur.execute('INSERT INTO results (NR, username, typeSpeed) VALUES (?, ?, ?)', (1, 'Vasja', 60))
-    conn.close()
-
-ca = certifi.where()
-myclient = pymongo.MongoClient('mongodb+srv://Pukitis:<Student007>@speedtypecluster.jk8qi.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', tlsCAFile=ca)
-mydb = myclient["SpeedTypeCluster"]
-mycol = mydb["SpeedTypeCluster"]
-
-addDBvalues()
-
-logger = logging.getLogger(logging.basicConfig(filename='logFile.log', encoding='utf-8', level=logging.DEBUG, format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p'))
-
-def writeConfig(): # Writes config file lines
-    file = open("config.txt", "a")
-    file.write("Testing writing!\n")
-    file.write("I wonder what i'll write here.")
-    file.close()
-
-def checkConfig():
-    if not(exists("config.txt")):
-        file = open("config.txt","x") # Makes config file, if doesn't exist
-        writeConfig()
-
-def readConfig():
-    file = open("config.txt", "r") # Reads config file
-    return file.read()
+createLocalDBTables()
 
 checkConfig()
-logger.info(readConfig())
 
-#ACTUAL PROJECT STARTS HERE
+wordDict = {}
+wordDict[0] = "banana"
+wordDict[1] = "telephone"
+wordDict[2] = "house"
+wordDict[3] = "crayon"
+wordDict[4] = "street"
+wordDict[5] = "backpack"
+wordDict[6] = "hammer"
+wordDict[7] = "grapefruit"
+wordDict[8] = "ball"
+wordDict[9] = "match"
 
-
-confDict = {}
-confDict[0] = "banana"
-confDict[1] = "nonana"
-confDict[2] = "house"
-confDict[3] = "crayon"
-print(len(confDict))
-
-choice= ""
+choice = ""
 while choice != "Start":
-    print("Write \"Start\" to start test.")
+    print("\nThis is a speed typing test. You will have to write the words that are printed out in the console.\nWrite \"Start\" to start test.")
     choice = input()
 
-print("The test has started")
-
-count = 0
+count = -1
 inputWord = ""
+characterCount = 0
 timerStart = perf_counter()
+mistakes = 0
 
-x = random.sample(range(0,len(confDict)),1)
-print(x)
-while count != 10:
-    word = confDict[random.sample(range(0,len(confDict)),1)[0]]
+while count < 1:
+    word = wordDict[random.sample(range(0, len(wordDict)), 1)[0]]
+    attempts = 0
     while inputWord != word:
-        print("Write "+word+"!")
+        if attempts > 0:
+            mistakes += 1
+        attempts += 1
+        print("Write \""+word+"\"!")
         inputWord = input()
-        count += 1
+    count += 1
+    characterCount += len(word)
 
 
 timerStop = perf_counter()
-print("Time is : ",(timerStop-timerStart))
+time = timerStop-timerStart
+speed = characterCount / time
+
+print("Time is : ", time, "!")
+print("You write at a speed of ", speed, " haracters per second!")
+print("You made ", mistakes, " mistakes!")
+
+username = ""
+while len(username)<3:
+    print("Please insert your username! (Must be atleast 3 characters long)")
+    username = input()
+
+addDataPymongo(username, speed)
+MigrateData()
