@@ -1,3 +1,4 @@
+from os import system
 import sqlite3
 import certifi
 import pymongo
@@ -6,16 +7,18 @@ from configMaker import *
 
 logger = logger.get_logger(__name__)
 
+checkConfig()
+
 # local database
 conn = sqlite3.connect("speedTypeDB.db")
 cur = conn.cursor()
 
-
 def createLocalDBTables():
     try:
         cur.execute("CREATE TABLE results (NR INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE, username TEXT NOT NULL, typeSpeed DOUBLE)")
+        logger.info("Created \"results\" table")
     except:
-        print("Something table go boom")
+        logger.info("\"results\" table allready created")
 
 
 def addDataLocalDB(Username, typeSpeed):
@@ -29,10 +32,12 @@ def addDataLocalDB(Username, typeSpeed):
         MigrateData()
 
 # online database
-user = "Pukitis"
-password = "Student007"
-cluster = "speedtypecluster"
-database = "SpeedTypeCluster"
+
+config = readConfig().split("@")
+user = config[0]
+password = config[1]
+cluster = config[2]
+database = config[3]
 ca = certifi.where()
 myclient = pymongo.MongoClient(f"mongodb+srv://{user}:{password}@{cluster}.jk8qi.mongodb.net/{database}?retryWrites=true&w=majority", tlsCAFile=ca)
 mydb = myclient["SpeedTypeCluster"]

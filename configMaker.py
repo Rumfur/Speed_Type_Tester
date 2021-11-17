@@ -2,7 +2,7 @@ from os.path import exists
 
 def writeConfig(): # Writes config file lines
     file = open("config.txt", "a")
-    file.write("Pukitis\nStudent007")
+    file.write("Pukitis@Student007@speedtypecluster@SpeedTypeCluster")
     file.close()
 
 def checkConfig():
