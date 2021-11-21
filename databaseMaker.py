@@ -15,21 +15,21 @@ cur = conn.cursor()
 
 def createLocalDBTables():
     try:
-        cur.execute("CREATE TABLE results (NR INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE, username TEXT NOT NULL, typeSpeed DOUBLE)")
+        cur.execute("CREATE TABLE results (NR INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE, username TEXT NOT NULL, typeSpeed DOUBLE, mistakes INTEGER)")
         logger.info("Created \"results\" table")
     except:
         logger.info("\"results\" table allready created")
 
 
-def addDataLocalDB(Username, typeSpeed):
+def addDataLocalDB(Username, typeSpeed, mistakes):
     try:
         cur.execute(
-            "INSERT INTO results (Username, typeSpeed) VALUES (?, ?)", (Username, typeSpeed))
+            "INSERT INTO results (Username, typeSpeed, mistakes) VALUES (?, ?, ?)", (Username, typeSpeed, mistakes))
         conn.commit()
         logger.info("Data was successfully added to a local database")
     except:
         cur.execute('DELETE FROM results')
-        MigrateData()
+        logger.info("Failed to add data to a local database")
 
 # online database
 
@@ -44,8 +44,8 @@ mydb = myclient["SpeedTypeCluster"]
 mycol = mydb["SpeedTypeCluster"]
 
 
-def addDataPymongo(Username, typeSpeed):
-    mydict = {"Username": Username, "typeSpeed": typeSpeed}
+def addDataPymongo(Username, typeSpeed, mistakes):
+    mydict = {"Username": Username, "typeSpeed": typeSpeed, "mistakes": mistakes}
     try:
         x = mycol.insert_one(mydict)
         logger.info("Data was successfully added to Pymongo")
@@ -65,7 +65,11 @@ def readPymongoData():
         print(i)
 
 def MigrateData():
+    cur.execute('DELETE FROM results')
     data = getPymongoData()
     for i in data:
-        addDataLocalDB(i.get("Username"), i.get("typeSpeed"))
+        addDataLocalDB(i.get("Username"), i.get("typeSpeed"), i.get("mistakes"))
     logger.info("Data was successfully migrated to local database")
+
+def closeConnection():
+    cur.close

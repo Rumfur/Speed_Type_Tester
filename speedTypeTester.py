@@ -1,3 +1,4 @@
+from importInstaller import *
 from os import write
 from os.path import exists
 from configMaker import *
@@ -5,7 +6,12 @@ from databaseMaker import *
 from time import perf_counter
 from random_word import RandomWords
 
+installImports()
+
 createLocalDBTables()
+
+r = RandomWords()
+words = r.get_random_words(hasDictionaryDef="true", limit=5)
 
 choice = ""
 while choice != "Start":
@@ -17,14 +23,6 @@ inputWord = ""
 characterCount = 0
 timerStart = perf_counter()
 mistakes = 0
-
-r = RandomWords()
-words = []
-i=0
-while i < 5: #generates words
-    temp = str(r.get_random_word(hasDictionaryDef="true"))
-    words.append(temp)
-    i += 1
 
 for word in words: #Goes through the words and asks the user to input them
     attempts = 0
@@ -51,5 +49,6 @@ while len(username)<3:
     if "@" in username:
         username = ""
 
-addDataPymongo(username, speed)
+addDataPymongo(username, speed, mistakes)
 MigrateData()
+#closeConnection
