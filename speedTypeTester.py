@@ -1,43 +1,54 @@
+from importInstaller import *
+from os import write
 from os.path import exists
-import logging
-import certifi
-import pymongo
-import sqlite3
+from configMaker import *
+from databaseMaker import *
+from time import perf_counter
+from random_word import RandomWords
 
-def addDBvalues():
-    conn = sqlite3.connect('speedTypeDB.db')
-    cur = conn.cursor()
-    cur.execute('DROP TABLE IF EXISTS results')
+installImports()
 
-    cur.execute('CREATE TABLE results (NR INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE, username TEXT NOT NULL UNIQUE, typeSpeed INTEGER)')
-    cur.execute('INSERT INTO results (NR, username, typeSpeed) VALUES (?, ?, ?)', (1, 'Vasja', 60))
-    conn.close()
+createLocalDBTables()
 
-ca = certifi.where()
-myclient = pymongo.MongoClient('mongodb+srv://Pukitis:<Student007>@speedtypecluster.jk8qi.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', tlsCAFile=ca)
-mydb = myclient["SpeedTypeCluster"]
-mycol = mydb["SpeedTypeCluster"]
+r = RandomWords()
+words = r.get_random_words(hasDictionaryDef="true", limit=5)
 
+choice = ""
+while choice != "Start":
+    print("\nThis is a speed typing test. You will have to write the words that are printed out in the console.\nWrite \"Start\" to start test.")
+    choice = input()
 
-addDBvalues()
+count = -1
+inputWord = ""
+characterCount = 0
+timerStart = perf_counter()
+mistakes = 0
 
-logger = logging.getLogger(logging.basicConfig(filename='logFile.log', encoding='utf-8', level=logging.DEBUG, format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p'))
+for word in words: #Goes through the words and asks the user to input them
+    attempts = 0
+    while inputWord != word:
+        if attempts > 0:
+            mistakes += 1
+        attempts += 1
+        print("Write \""+word+"\"!")
+        inputWord = input()
+    characterCount += len(word)
 
-def writeConfig(): # Writes config file lines
-    file = open("config.txt", "a")
-    file.write("Testing writing!\n")
-    file.write("I wonder what i'll write here.")
-    file.close()
+timerStop = perf_counter()
+time = timerStop-timerStart
+speed = characterCount / time
 
-def checkConfig():
-    if not(exists("config.txt")):
-        file = open("config.txt","x") # Makes config file, if doesn't exist
-        writeConfig()
+print("Time is : ", time, "!")
+print("You write at a speed of ", speed, " haracters per second!")
+print("You made ", mistakes, " mistakes!")
 
-def readConfig():
-    file = open("config.txt", "r") # Reads config file
-    return file.read()
+username = ""
+while len(username)<3:
+    print("Please insert your username!\n Username must be atleast 3 characters long and cannot contain \"@\" symbol!")
+    username = input()
+    if "@" in username:
+        username = ""
 
-checkConfig()
-logger.info(readConfig())
-print("Hello world")
+addDataPymongo(username, speed, mistakes)
+MigrateData()
+#closeConnection
