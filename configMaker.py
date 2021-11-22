@@ -5,7 +5,7 @@ logger = get_logger(__name__)
 
 def writeConfig(): # Writes config file lines
     file = open("config.txt", "a")
-    file.write("[APP\nusername: Pukitis\npassword: Student007\ncluster: speedtypecluster\ndatabase: SpeedTypeCluster]")
+    file.write("[MONGODB\nusername: Pukitis\npassword: Student007\ncluster: speedtypecluster\ndatabase: SpeedTypeCluster]")
     file.close()
 
 def checkConfig():
@@ -22,7 +22,7 @@ def readConfig():
         logger.critical("Config file not found!")
     try:
         for line in file:
-            if line == "[APP]\n":
+            if line == "[MONGODB]\n":
                 continue
             values = line.split("=")
             data[values[0].strip()] = values[1].strip()

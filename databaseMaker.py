@@ -2,7 +2,7 @@ from os import system
 import sqlite3
 import certifi
 import pymongo
-from logger import *
+from logger import get_logger
 from configMaker import *
 
 logger = get_logger(__name__)
