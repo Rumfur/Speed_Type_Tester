@@ -2,10 +2,10 @@ from os import system
 import sqlite3
 import certifi
 import pymongo
-import logger
+from logger import *
 from configMaker import *
 
-logger = logger.get_logger(__name__)
+logger = get_logger(__name__)
 
 checkConfig()
 
@@ -20,7 +20,6 @@ def createLocalDBTables():
     except:
         logger.info("\"results\" table allready created")
 
-
 def addDataLocalDB(Username, typeSpeed, mistakes):
     try:
         cur.execute(
@@ -33,16 +32,16 @@ def addDataLocalDB(Username, typeSpeed, mistakes):
 
 # online database
 
-config = readConfig().split("@")
-user = config[0]
-password = config[1]
-cluster = config[2]
-database = config[3]
+config = readConfig()
+ca = certifi.where()
+user = config["username"]
+password = config["password"]
+cluster = config["cluster"]
+database = config["database"]
 ca = certifi.where()
 myclient = pymongo.MongoClient(f"mongodb+srv://{user}:{password}@{cluster}.jk8qi.mongodb.net/{database}?retryWrites=true&w=majority", tlsCAFile=ca)
-mydb = myclient["SpeedTypeCluster"]
-mycol = mydb["SpeedTypeCluster"]
-
+mydb = myclient[config["database"]]
+mycol = mydb[config["database"]]
 
 def addDataPymongo(Username, typeSpeed, mistakes):
     mydict = {"Username": Username, "typeSpeed": typeSpeed, "mistakes": mistakes}
@@ -70,6 +69,3 @@ def MigrateData():
     for i in data:
         addDataLocalDB(i.get("Username"), i.get("typeSpeed"), i.get("mistakes"))
     logger.info("Data was successfully migrated to local database")
-
-def closeConnection():
-    cur.close

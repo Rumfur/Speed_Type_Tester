@@ -1,5 +1,4 @@
 import logging
-from configMaker import *
 
 def get_logger(name, log_config = None):
     log_filename = "logFile.log"

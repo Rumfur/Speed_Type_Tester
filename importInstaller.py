@@ -1,6 +1,6 @@
-import logger
+from logger import get_logger
 import pip
-logger = logger.get_logger(__name__)
+logger = get_logger(__name__)
 
 # Installs packages required for the programm
 

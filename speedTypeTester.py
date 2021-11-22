@@ -18,7 +18,6 @@ while choice != "Start":
     print("\nThis is a speed typing test. You will have to write the words that are printed out in the console.\nWrite \"Start\" to start test.")
     choice = input()
 
-count = -1
 inputWord = ""
 characterCount = 0
 timerStart = perf_counter()
@@ -51,4 +50,3 @@ while len(username)<3:
 
 addDataPymongo(username, speed, mistakes)
 MigrateData()
-#closeConnection

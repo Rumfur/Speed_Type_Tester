@@ -1,1 +1,5 @@
-Pukitis@Student007@speedtypecluster@SpeedTypeCluster
+[APP]
+username = Pukitis
+password = Student007
+cluster = speedtypecluster
+database = SpeedTypeCluster
