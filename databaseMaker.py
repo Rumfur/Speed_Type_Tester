@@ -31,7 +31,6 @@ def addDataLocalDB(Username, typeSpeed, mistakes):
         logger.info("Failed to add data to a local database")
 
 # online database
-
 config = readConfig()
 ca = certifi.where()
 user = config["username"]
@@ -43,29 +42,29 @@ myclient = pymongo.MongoClient(f"mongodb+srv://{user}:{password}@{cluster}.jk8qi
 mydb = myclient[config["database"]]
 mycol = mydb[config["database"]]
 
-def addDataPymongo(Username, typeSpeed, mistakes):
+def addDataMongoDB(Username, typeSpeed, mistakes):
     mydict = {"Username": Username, "typeSpeed": typeSpeed, "mistakes": mistakes}
     try:
         x = mycol.insert_one(mydict)
-        logger.info("Data was successfully added to Pymongo")
+        logger.info("Data was successfully added to mongo database")
     except:
-        print("Couldnt add data to Pymongo")
-        logger.critical("Data was not added to Pymongo")
+        print("Couldnt add data to mongo database")
+        logger.critical("Data was not added to mongo database")
         logger.exception("")
 
-def getPymongoData():
+def getMongoDBData():
     data = mycol.find({})
-    logger.info("Data was successfully read from Pymongo")
+    logger.info("Data was successfully read from mongo database")
     return data
 
-def readPymongoData():
-    data = getPymongoData()
+def readMongoDBData():
+    data = getMongoDBData()
     for i in data:
         print(i)
 
 def MigrateData():
     cur.execute('DELETE FROM results')
-    data = getPymongoData()
+    data = getMongoDBData()
     for i in data:
         addDataLocalDB(i.get("Username"), i.get("typeSpeed"), i.get("mistakes"))
     logger.info("Data was successfully migrated to local database")

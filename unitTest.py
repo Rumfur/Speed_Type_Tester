@@ -4,29 +4,17 @@ import pymongo
 from random_word import RandomWords
 from configparser import ConfigParser
 
-print("Configuration file test")
+print("Starting unit test")
+print("----------------------------------------")
 
-# Testing if configuration file exists on disk in the current working directory
-print("----------")
 print("Checking if config file exists -->")
 assert os.path.isfile("config.txt") == True
 print("OK")
 print("----------")
 
-# Opening the configuration file
 config = ConfigParser()
-config.read('config.txt')
+config.read("config.txt") # Opens the config file
 
-# Checking if all NEWS API  related config options are present in the config file
-print("Checking if config has NEWS API related options -->")
-assert config.has_option('MONGODB', 'username') == True
-assert config.has_option('MONGODB', 'password') == True
-assert config.has_option('MONGODB', 'cluster') == True
-assert config.has_option('MONGODB', 'database') == True
-print("OK")
-print("----------")
-
-# Checking if programm receaves words from RandomWords API
 print("Checking if programm receaves words from RandomWords API -->")
 r = RandomWords()
 words = r.get_random_words(hasDictionaryDef="true", limit=5)
@@ -34,27 +22,30 @@ assert (len(words) > 0) == True
 print("OK")
 print("----------")
 
-# Checking if possible to connect to MongoDb with the existing config options
-print("Checking if it is possible to connect to MongoDb with the given config options -->")
+print("Checking if config file has mongo database values -->")
+assert config.has_option("MONGODB", "username") == True
+assert config.has_option("MONGODB", "password") == True
+assert config.has_option("MONGODB", "cluster") == True
+assert config.has_option("MONGODB", "database") == True
+print("OK")
+print("----------")
+
+print("Checking if it is possible to connect to Mongo database with the config values -->")
 ca = certifi.where()
-mongodb_user = config.get('MONGODB', 'user')
-mongodb_password = config.get('MONGODB', 'password')
-mongodb_cluster = config.get('MONGODB', 'password')
-mongodb_database = config.get('MONGODB', 'dataBase')
-connection = pymongo.MongoClient(
-    f'mongodb+srv://{mongodb_user}:{mongodb_password}@{mongodb_database}.ray5r.mongodb.net/{mongodb_database.capitalize()}?retryWrites=true&w=majority', tlsCAFile=ca)
-serverData = connection.admin.command('ismaster')
-
+user = config.get("MONGODB", "username")
+password = config.get("MONGODB", "password")
+cluster = config.get("MONGODB", "cluster")
+database = config.get("MONGODB", "dataBase")
+connection = pymongo.MongoClient(f"mongodb+srv://{user}:{password}@{cluster}.jk8qi.mongodb.net/{database}?retryWrites=true&w=majority", tlsCAFile=ca)
+serverData = connection.admin.command("ismaster")
 assert serverData["ismaster"] == True
-
 print("OK")
 print("----------")
 
-# Checking if log file exist
-print("Checking if DB migration component log config file exists log_migrate_db.yaml -->")
-assert os.path.isfile("logfile.log") == True
+print("Checking if log file exists -->")
+assert os.path.isfile("logFile.log") == True
 print("OK")
 print("----------")
 
-print("Configuration file test DONE -> ALL OK")
+print("Test complete -> Everything is OK")
 print("----------------------------------------")

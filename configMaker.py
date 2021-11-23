@@ -10,7 +10,7 @@ def writeConfig(): # Writes config file lines
 
 def checkConfig():
     if not(exists("config.txt")):
-        file = open("config.txt","x") # Makes config file, if doesn't exist
+        file = open("config.txt","x") # Makes config file, if it doesn't exist
         writeConfig()
 
 def readConfig():
@@ -25,7 +25,7 @@ def readConfig():
             if line == "[MONGODB]\n":
                 continue
             values = line.split("=")
-            data[values[0].strip()] = values[1].strip()
+            data[values[0].strip()] = values[1].strip() # puts config file data in a dictionary
         logger.info("Config file read successfully")
         return data
     except:
