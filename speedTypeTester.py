@@ -1,4 +1,4 @@
-from importInstaller import *
+from importInstaller import * # NO IMPORTS WORK, BECAUSE THIS COMPUTER IS BROKEN!
 from os import write
 from os.path import exists
 from configMaker import *
