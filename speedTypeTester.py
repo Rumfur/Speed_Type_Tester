@@ -1,4 +1,5 @@
 from importInstaller import *
+installImports()
 from os import write
 from os.path import exists
 from configMaker import *
@@ -6,7 +7,7 @@ from databaseMaker import *
 from time import perf_counter
 from random_word import RandomWords
 
-installImports()
+
 
 createLocalDBTables()
 

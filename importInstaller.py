@@ -5,7 +5,7 @@ logger = get_logger(__name__)
 # Installs packages required for the programm
 
 def installImports():
-    packages = ["pymongo", "random-word", "sqlite3", "certifi"]
+    packages = ["pymongo", "random-word","pyyaml", "sqlite3", "certifi"]
     for package in packages:
         try:
             logger.info("Installing " + package + " package")
