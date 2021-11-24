@@ -1,4 +1,4 @@
-from importInstaller import *
+from importInstaller import * # COMPUTER IS BROKEN, SO NOTHING WORKS
 installImports()
 from os import write
 from os.path import exists
@@ -6,8 +6,6 @@ from configMaker import *
 from databaseMaker import *
 from time import perf_counter
 from random_word import RandomWords
-
-
 
 createLocalDBTables()
 
