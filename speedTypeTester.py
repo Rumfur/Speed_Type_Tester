@@ -1,4 +1,4 @@
-from importInstaller import * # COMPUTER IS BROKEN, SO NOTHING WORKS
+from importInstaller import *
 installImports()
 from os import write
 from os.path import exists
